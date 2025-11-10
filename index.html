@@ -18,6 +18,28 @@
             overflow-x: hidden;
         }
 
+        .top-bar {
+            background: #1a1a1a;
+            color: white;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .top-bar a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .top-bar a:hover {
+            color: #2ecc71;
+        }
+
+        body.light-mode .top-bar {
+            background: #2c3e50;
+        }
+
         header {
             background: rgba(30, 39, 46, 0.95);
             backdrop-filter: blur(10px);
@@ -180,6 +202,14 @@
             background: #f8f9fa;
         }
 
+        body.light-mode .contact form > div {
+            background: #f8f9fa !important;
+        }
+
+        body.light-mode .contact form a {
+            color: #3498db !important;
+        }
+
         body.light-mode .contact input,
         body.light-mode .contact textarea {
             background: #ffffff;
@@ -206,7 +236,7 @@
             color: white;
             padding: 180px 2rem 120px;
             text-align: center;
-            margin-top: 60px;
+            margin-top: 100px;
             position: relative;
             overflow: hidden;
         }
@@ -659,6 +689,9 @@
     </style>
 </head>
 <body>
+    <div class="top-bar">
+        📧 <a href="mailto:synthoriawebdev@gmail.com">synthoriawebdev@gmail.com</a>
+    </div>
     <header>
         <nav>
             <div class="logo">
@@ -734,14 +767,11 @@
 
     <section id="contact" class="contact">
         <h2>Get In Touch</h2>
-        <p class="contact-subtitle">Let's discuss how we can help your business grow</p>
-        <form>
-            <input type="text" placeholder="Your Name" required>
-            <input type="email" placeholder="Your Email" required>
-            <input type="text" placeholder="Subject">
-            <textarea placeholder="Tell us about your project..." required></textarea>
-            <button type="submit">Send Message</button>
-        </form>
+        <p class="contact-subtitle">Ready to start your project? Reach out to us!</p>
+        <div style="text-align: center; font-size: 1.3rem; padding: 2rem; background: white; border-radius: 20px; box-shadow: 0 15px 50px rgba(0,0,0,0.1);">
+            <p style="margin-bottom: 1rem; color: #2c3e50; font-weight: 600;">📧 Email Us:</p>
+            <a href="mailto:synthoriawebdev@gmail.com" style="color: #3498db; text-decoration: none; font-size: 1.5rem; font-weight: bold; transition: all 0.3s;">synthoriawebdev@gmail.com</a>
+        </div>
     </section>
 
     <footer>
@@ -785,20 +815,23 @@
         });
 
         // Form Submission
-        document.querySelector('.contact form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const button = this.querySelector('button');
-            button.textContent = 'Sending...';
-            setTimeout(() => {
-                button.textContent = 'Message Sent! ✓';
-                button.style.background = 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)';
+        const contactForm = document.querySelector('.contact form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const button = this.querySelector('button');
+                button.textContent = 'Sending...';
                 setTimeout(() => {
-                    button.textContent = 'Send Message';
-                    button.style.background = '';
-                    this.reset();
-                }, 2000);
-            }, 1000);
-        });
+                    button.textContent = 'Message Sent! ✓';
+                    button.style.background = 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)';
+                    setTimeout(() => {
+                        button.textContent = 'Send Message';
+                        button.style.background = '';
+                        this.reset();
+                    }, 2000);
+                }, 1000);
+            });
+        }
 
         // Intersection Observer for scroll animations
         const observerOptions = {
