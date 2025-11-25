@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Realms Terminal</title>
+    <title>Roblox Background Check</title>
     <style>
         * {
             margin: 0;
@@ -111,7 +111,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>REALMS SECURITY OFFICE TERMINAL</h1>
+        <h1>ROBLOX BACKGROUND CHECK TOOL</h1>
         
         <div class="input-section">
             <label for="userId">User ID:</label>
@@ -188,7 +188,7 @@
                     fetch(`${PROXY}https://users.roblox.com/v1/users/${userId}/username-history`).then(r => r.json()).catch(() => ({data: []})),
                     fetch(`${PROXY}https://friends.roblox.com/v1/users/${userId}/friends/count`).then(r => r.json()).catch(() => ({count: 0})),
                     fetch(`${PROXY}https://groups.roblox.com/v2/users/${userId}/groups/roles`).then(r => r.json()).catch(() => ({data: []})),
-                    fetch(`${PROXY}https://badges.roblox.com/v1/users/${userId}/badges?limit=100`).then(r => r.json()).catch(() => ({data: []})),
+                    fetch(`${PROXY}https://badges.roblox.com/v1/users/${userId}/badges?limit=100&sortOrder=Asc`).then(r => r.json()).catch(() => ({data: []})),
                     fetch(`${PROXY}https://accountinformation.roblox.com/v1/users/${userId}/roblox-badges`).then(r => r.json()).catch(() => ([]))
                 ]);
 
@@ -242,31 +242,27 @@
             
             const badgesEl = document.getElementById('badges');
             
-            console.log('Game badges response:', gameBadges);
-            console.log('Roblox badges response:', robloxBadges);
-            
             const totalGameBadges = gameBadges?.data?.length || 0;
             const totalRobloxBadges = robloxBadges?.length || 0;
             
             if (totalGameBadges === 0 && totalRobloxBadges === 0) {
-                badgesEl.innerHTML = 'No badges - HAZARD';
+                badgesEl.innerHTML = 'No badges found - HAZARD';
             } else {
                 let badgeText = '';
                 if (totalGameBadges > 0) {
-                    badgeText += `${totalGameBadges} game badges earned`;
+                    badgeText += `${totalGameBadges} game badge(s) earned`;
                     if (gameBadges.nextPageCursor) {
-                        badgeText += ' (showing first 100)';
+                        badgeText += ' (100+ total)';
                     }
                     badgeText += '<br>';
+                } else if (totalRobloxBadges > 0) {
+                    badgeText += '0 game badges<br>';
                 }
                 if (totalRobloxBadges > 0) {
                     const robloxBadgeNames = robloxBadges.map(b => b.name).join(', ');
-                    badgeText += `${totalRobloxBadges} Roblox badges: ${robloxBadgeNames}`;
+                    badgeText += `${totalRobloxBadges} Roblox badge(s): ${robloxBadgeNames}`;
                 }
-                if (badgeText === '') {
-                    badgeText = 'No badges - HAZARD';
-                }
-                badgesEl.innerHTML = badgeText;
+                badgesEl.innerHTML = badgeText || 'No badges found - HAZARD';
             }
             
             showResults();
@@ -287,8 +283,8 @@
                 reasons.push('New account');
             }
             
-            const totalGameBadges = gameBadges.data ? gameBadges.data.length : 0;
-            const totalRobloxBadges = robloxBadges ? robloxBadges.length : 0;
+            const totalGameBadges = gameBadges?.data?.length || 0;
+            const totalRobloxBadges = robloxBadges?.length || 0;
             const totalBadges = totalGameBadges + totalRobloxBadges;
             
             if (totalBadges === 0) {
