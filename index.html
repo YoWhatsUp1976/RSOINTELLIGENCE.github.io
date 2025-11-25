@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Background Check</title>
+    <title>Realms Terminal</title>
     <style>
         * {
             margin: 0;
@@ -111,7 +111,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>ROBLOX BACKGROUND CHECK TOOL</h1>
+        <h1>REALMS SECURITY OFFICE TERMINAL</h1>
         
         <div class="input-section">
             <label for="userId">User ID:</label>
@@ -241,19 +241,30 @@
             }
             
             const badgesEl = document.getElementById('badges');
-            const totalGameBadges = gameBadges.data ? gameBadges.data.length : 0;
-            const totalRobloxBadges = robloxBadges ? robloxBadges.length : 0;
+            
+            console.log('Game badges response:', gameBadges);
+            console.log('Roblox badges response:', robloxBadges);
+            
+            const totalGameBadges = gameBadges?.data?.length || 0;
+            const totalRobloxBadges = robloxBadges?.length || 0;
             
             if (totalGameBadges === 0 && totalRobloxBadges === 0) {
                 badgesEl.innerHTML = 'No badges - HAZARD';
             } else {
                 let badgeText = '';
                 if (totalGameBadges > 0) {
-                    badgeText += `${totalGameBadges} game badges earned<br>`;
+                    badgeText += `${totalGameBadges} game badges earned`;
+                    if (gameBadges.nextPageCursor) {
+                        badgeText += ' (showing first 100)';
+                    }
+                    badgeText += '<br>';
                 }
                 if (totalRobloxBadges > 0) {
                     const robloxBadgeNames = robloxBadges.map(b => b.name).join(', ');
                     badgeText += `${totalRobloxBadges} Roblox badges: ${robloxBadgeNames}`;
+                }
+                if (badgeText === '') {
+                    badgeText = 'No badges - HAZARD';
                 }
                 badgesEl.innerHTML = badgeText;
             }
