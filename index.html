@@ -3,514 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alemannia Realms Security Office</title>
+    <title>Realms Security Office</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #000000;
-            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #fff;
             padding: 20px;
-            color: white;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 5px;
-            border: 1px solid #ffffff;
-        }
-
-        .header img {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 15px;
-        }
-
-        .header h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
-            color: #ffffff;
-        }
-
-        .header p {
-            color: #cccccc;
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .search-box {
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 5px;
-            margin-bottom: 30px;
-            border: 1px solid #ffffff;
-        }
-
-        .search-form {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ffffff;
-            border-radius: 3px;
-            font-size: 16px;
-            background: #0a0a0a;
-            color: white;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #cccccc;
-        }
-
-        input[type="text"]::placeholder {
-            color: #666666;
-        }
-
-        button {
-            padding: 12px 25px;
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            border-radius: 3px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #cccccc;
-        }
-
-        button:active {
-            background: #999999;
-        }
-
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .results {
-            display: none;
-        }
-
-        .profile-card {
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            border: 1px solid #ffffff;
-        }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #ffffff;
-        }
-
-        .avatar {
-            width: 150px;
-            height: 150px;
-            border-radius: 3px;
-            border: 2px solid #ffffff;
-        }
-
-        .profile-info h2 {
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        .profile-info .username {
-            color: #cccccc;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-
-        .profile-info .status {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 3px;
-            font-size: 0.9em;
-            margin-top: 10px;
-        }
-
-        .status.online {
-            background: #ffffff;
-            color: #000000;
-        }
-
-        .status.offline {
-            background: #666666;
-            color: white;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .info-item {
-            background: #0a0a0a;
-            padding: 15px;
-            border-radius: 3px;
-            border-left: 3px solid #ffffff;
-        }
-
-        .info-item label {
-            display: block;
-            color: #cccccc;
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
-
-        .info-item value {
-            display: block;
-            color: white;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-
-        .description {
-            background: #0a0a0a;
-            padding: 20px;
-            border-radius: 3px;
-            margin-bottom: 20px;
-            border: 1px solid #ffffff;
-        }
-
-        .description h3 {
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        .description p {
-            color: #cccccc;
             line-height: 1.6;
         }
-
-        .groups-section {
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 5px;
-            border: 1px solid #ffffff;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
         }
-
-        .groups-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            border-bottom: 2px solid #fff;
+            padding-bottom: 10px;
         }
-
-        .groups-header h3 {
-            color: white;
+        .input-section {
+            margin-bottom: 30px;
         }
-
-        .group-search {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
         }
-
-        .group-search input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ffffff;
-            border-radius: 3px;
-            background: #0a0a0a;
-            color: white;
-        }
-
-        .group-search input::placeholder {
-            color: #666666;
-        }
-
-        .groups-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .group-card {
-            background: #0a0a0a;
-            padding: 20px;
-            border-radius: 3px;
-            border: 1px solid #ffffff;
-        }
-
-        .group-card:hover {
-            border-color: #cccccc;
-        }
-
-        .group-card img {
+        input, textarea {
             width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 3px;
+            padding: 10px;
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            font-family: 'Courier New', monospace;
             margin-bottom: 15px;
         }
-
-        .group-card h4 {
-            color: white;
-            margin-bottom: 10px;
+        button {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 16px;
         }
-
-        .group-card .group-role {
-            display: inline-block;
-            background: #ffffff;
-            color: #000000;
-            padding: 5px 10px;
-            border-radius: 3px;
-            font-size: 0.85em;
-            margin-bottom: 10px;
+        button:hover {
+            background: #ccc;
         }
-
-        .group-card .group-info {
-            color: #cccccc;
-            font-size: 0.9em;
+        .results {
+            margin-top: 30px;
+            border: 2px solid #fff;
+            padding: 20px;
+            display: none;
         }
-
-        .error {
-            background: #ffffff;
-            color: #000000;
+        .result-item {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #666;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .result-value {
+            margin-left: 10px;
+        }
+        .safety-rating {
+            margin-top: 20px;
             padding: 15px;
-            border-radius: 3px;
-            margin-bottom: 20px;
-            border: 1px solid #cccccc;
+            border: 3px solid #fff;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
         }
-
+        .rating-safe { background: #fff; color: #000; }
+        .rating-caution { background: #666; color: #fff; }
+        .rating-danger { background: #333; color: #fff; border-color: #fff; }
         .loading {
             text-align: center;
-            padding: 40px;
-            color: white;
-            font-size: 1.2em;
+            padding: 20px;
+            display: none;
+        }
+        .error {
+            color: #fff;
+            background: #333;
+            padding: 15px;
+            border: 2px solid #fff;
+            margin-top: 15px;
+            display: none;
+        }
+        .group-list, .badge-list, .username-list, .friends-info {
+            margin-left: 10px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <img src="assets/logo.png" alt="Logo">
-            <h1>ALEMANNIA REALMS SECURITY OFFICE</h1>
-            <p>Intelligence & Background Check System</p>
+        <h1>REALMS BACKGROUND CHECK DATA</h1>
+        
+        <div class="input-section">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" placeholder="Enter Roblox User ID">
+            
+            <button onclick="checkUser()">RUN CHECK</button>
         </div>
 
-        <div class="search-box">
-            <div class="search-form">
-                <input type="text" id="userId" placeholder="Enter Roblox User ID" />
-                <button onclick="searchUser()">Search</button>
+        <div class="loading" id="loading">LOADING DATA...</div>
+        <div class="error" id="error"></div>
+
+        <div class="results" id="results">
+            <div class="result-item">
+                <div class="result-label">ROBLOX USERNAME:</div>
+                <div class="result-value" id="username"></div>
             </div>
-            <div id="error" style="display: none;" class="error"></div>
-        </div>
-
-        <div id="loading" class="loading" style="display: none;">
-            Loading player information...
-        </div>
-
-        <div id="results" class="results">
-            <div class="profile-card">
-                <div class="profile-header">
-                    <img id="avatar" class="avatar" src="" alt="Avatar" />
-                    <div class="profile-info">
-                        <h2 id="displayName"></h2>
-                        <div class="username" id="username"></div>
-                        <div id="status" class="status"></div>
-                    </div>
-                </div>
-
-                <div class="info-grid">
-                    <div class="info-item">
-                        <label>User ID</label>
-                        <value id="userIdDisplay"></value>
-                    </div>
-                    <div class="info-item">
-                        <label>Account Created</label>
-                        <value id="created"></value>
-                    </div>
-                    <div class="info-item">
-                        <label>Friends</label>
-                        <value id="friends"></value>
-                    </div>
-                    <div class="info-item">
-                        <label>Followers</label>
-                        <value id="followers"></value>
-                    </div>
-                    <div class="info-item">
-                        <label>Following</label>
-                        <value id="following"></value>
-                    </div>
-                    <div class="info-item">
-                        <label>Account Status</label>
-                        <value id="banned"></value>
-                    </div>
-                </div>
-
-                <div class="description">
-                    <h3>Description</h3>
-                    <p id="description"></p>
-                </div>
+            <div class="result-item">
+                <div class="result-label">ROBLOX PROFILE LINK:</div>
+                <div class="result-value" id="profileLink"></div>
             </div>
-
-            <div class="groups-section">
-                <div class="groups-header">
-                    <h3>Groups (<span id="groupCount">0</span>)</h3>
-                </div>
-                <div class="group-search">
-                    <input type="text" id="groupSearch" placeholder="Search groups..." oninput="filterGroups()" />
-                </div>
-                <div id="groups" class="groups-grid"></div>
+            <div class="result-item">
+                <div class="result-label">JOIN DATE:</div>
+                <div class="result-value" id="joinDate"></div>
             </div>
+            <div class="result-item">
+                <div class="result-label">ACCOUNT AGE:</div>
+                <div class="result-value" id="accountAge"></div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">PREVIOUS USERNAMES:</div>
+                <div class="username-list" id="previousUsernames"></div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">FRIENDS LIST CHECK:</div>
+                <div class="friends-info" id="friendsCheck"></div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">GROUPS THEY ARE IN:</div>
+                <div class="group-list" id="groups"></div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">KNOWN HOSTILE/EXPLOIT GROUPS:</div>
+                <div class="group-list" id="hostileGroupsFound"></div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">GAME BADGES / ACTIVITY:</div>
+                <div class="badge-list" id="badges"></div>
+            </div>
+            
+            <div class="safety-rating" id="safetyRating"></div>
         </div>
     </div>
 
     <script>
-        let allGroups = [];
+        const PROXY = 'https://corsproxy.io/?';
+        const HOSTILE_GROUPS = ['12345', '67890', '11111', '22222', '33333'];
 
-        async function searchUser() {
+        async function checkUser() {
             const userId = document.getElementById('userId').value.trim();
-            const errorDiv = document.getElementById('error');
-            const loading = document.getElementById('loading');
-            const results = document.getElementById('results');
-
-            errorDiv.style.display = 'none';
-            results.style.display = 'none';
-            loading.style.display = 'block';
-
-            if (!userId || isNaN(userId)) {
-                showError('Please enter a valid User ID');
-                loading.style.display = 'none';
+            
+            if (!userId) {
+                showError('Please enter a User ID');
                 return;
             }
+
+            hideError();
+            showLoading();
+            hideResults();
 
             try {
-                const userResponse = await fetch(`https://users.roblox.com/v1/users/${userId}`);
-                if (!userResponse.ok) throw new Error('User not found');
-                const userData = await userResponse.json();
-
-                const avatarResponse = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png`);
-                const avatarData = await avatarResponse.json();
-
-                const friendsResponse = await fetch(`https://friends.roblox.com/v1/users/${userId}/friends/count`);
-                const friendsData = await friendsResponse.json();
-
-                const followersResponse = await fetch(`https://friends.roblox.com/v1/users/${userId}/followers/count`);
-                const followersData = await followersResponse.json();
+                const userInfo = await fetch(`${PROXY}https://users.roblox.com/v1/users/${userId}`).then(r => r.json());
                 
-                const followingResponse = await fetch(`https://friends.roblox.com/v1/users/${userId}/followings/count`);
-                const followingData = await followingResponse.json();
+                const [previousNames, friends, groups, badges] = await Promise.all([
+                    fetch(`${PROXY}https://users.roblox.com/v1/users/${userId}/username-history`).then(r => r.json()).catch(() => ({data: []})),
+                    fetch(`${PROXY}https://friends.roblox.com/v1/users/${userId}/friends/count`).then(r => r.json()).catch(() => ({count: 0})),
+                    fetch(`${PROXY}https://groups.roblox.com/v2/users/${userId}/groups/roles`).then(r => r.json()).catch(() => ({data: []})),
+                    fetch(`${PROXY}https://badges.roblox.com/v1/users/${userId}/badges?limit=100`).then(r => r.json()).catch(() => ({data: []}))
+                ]);
 
-                const groupsResponse = await fetch(`https://groups.roblox.com/v2/users/${userId}/groups/roles`);
-                const groupsData = await groupsResponse.json();
-
-                displayUserInfo(userData, avatarData, friendsData, followersData, followingData);
-                displayGroups(groupsData.data || []);
-
-                loading.style.display = 'none';
-                results.style.display = 'block';
-
+                displayResults(userInfo, previousNames, friends, groups, badges);
+                calculateSafetyRating(userInfo, previousNames, friends, groups, badges);
+                
             } catch (error) {
-                loading.style.display = 'none';
-                showError('Error: ' + error.message);
+                showError('Failed to fetch user data. Check the User ID and try again.');
+            } finally {
+                hideLoading();
             }
         }
 
-        function displayUserInfo(user, avatar, friends, followers, following) {
-            document.getElementById('avatar').src = avatar.data[0]?.imageUrl || '';
-            document.getElementById('displayName').textContent = user.displayName;
-            document.getElementById('username').textContent = '@' + user.name;
-            document.getElementById('userIdDisplay').textContent = user.id;
+        function displayResults(user, prevNames, friends, groups, badges) {
+            document.getElementById('username').textContent = user.displayName || user.name || 'N/A';
+            document.getElementById('profileLink').innerHTML = `<a href="https://www.roblox.com/users/${user.id}/profile" target="_blank" style="color: #fff;">https://www.roblox.com/users/${user.id}/profile</a>`;
             
-            const created = new Date(user.created);
-            document.getElementById('created').textContent = created.toLocaleDateString();
+            const joinDate = new Date(user.created);
+            document.getElementById('joinDate').textContent = joinDate.toLocaleDateString();
             
-            document.getElementById('friends').textContent = friends.count.toLocaleString();
-            document.getElementById('followers').textContent = followers.count.toLocaleString();
-            document.getElementById('following').textContent = following.count.toLocaleString();
-            document.getElementById('banned').textContent = user.isBanned ? 'Banned' : 'Active';
-            document.getElementById('description').textContent = user.description || 'No description provided';
-
-            const statusEl = document.getElementById('status');
-            statusEl.textContent = 'Status Unknown';
-            statusEl.className = 'status offline';
+            const accountAgeDays = Math.floor((new Date() - joinDate) / (1000 * 60 * 60 * 24));
+            const accountAgeYears = Math.floor(accountAgeDays / 365);
+            const remainingDays = accountAgeDays % 365;
+            document.getElementById('accountAge').textContent = `${accountAgeYears} years, ${remainingDays} days (${accountAgeDays} total days)`;
+            
+            const prevNamesEl = document.getElementById('previousUsernames');
+            if (prevNames.data && prevNames.data.length > 0) {
+                prevNamesEl.textContent = prevNames.data.map(n => n.name).join(', ');
+            } else {
+                prevNamesEl.textContent = 'No previous usernames';
+            }
+            
+            document.getElementById('friendsCheck').textContent = `${friends.count || 0} friends`;
+            
+            const groupsEl = document.getElementById('groups');
+            if (groups.data && groups.data.length > 0) {
+                groupsEl.innerHTML = groups.data.map(g => `${g.group.name} (ID: ${g.group.id})`).join('<br>');
+            } else {
+                groupsEl.textContent = 'Not in any groups';
+            }
+            
+            const hostileGroupsEl = document.getElementById('hostileGroupsFound');
+            const userGroupIds = groups.data ? groups.data.map(g => g.group.id.toString()) : [];
+            const foundHostile = HOSTILE_GROUPS.filter(hId => userGroupIds.includes(hId));
+            
+            if (foundHostile.length > 0) {
+                hostileGroupsEl.textContent = `ALERT: Found in ${foundHostile.length} hostile group(s): ${foundHostile.join(', ')}`;
+            } else {
+                hostileGroupsEl.textContent = 'None detected';
+            }
+            
+            const badgesEl = document.getElementById('badges');
+            if (badges.data && badges.data.length > 0) {
+                badgesEl.textContent = `${badges.data.length} badges earned`;
+            } else {
+                badgesEl.textContent = 'No badges - HAZARD';
+            }
+            
+            showResults();
         }
 
-        async function displayGroups(groups) {
-            allGroups = groups;
-            document.getElementById('groupCount').textContent = groups.length;
+        function calculateSafetyRating(user, prevNames, friends, groups, badges) {
+            let riskScore = 0;
+            let reasons = [];
             
-            const groupsContainer = document.getElementById('groups');
-            groupsContainer.innerHTML = '';
-
-            if (groups.length === 0) {
-                groupsContainer.innerHTML = '<p style="color: #cccccc; text-align: center; grid-column: 1/-1;">This user is not in any groups</p>';
-                return;
+            const joinDate = new Date(user.created);
+            const accountAgeDays = Math.floor((new Date() - joinDate) / (1000 * 60 * 60 * 24));
+            
+            if (accountAgeDays < 30) {
+                riskScore += 3;
+                reasons.push('Very new account');
+            } else if (accountAgeDays < 180) {
+                riskScore += 2;
+                reasons.push('New account');
             }
-
-            for (const groupData of groups) {
-                const group = groupData.group;
-                const role = groupData.role;
-
-                const thumbnailResponse = await fetch(`https://thumbnails.roblox.com/v1/groups/icons?groupIds=${group.id}&size=150x150&format=Png`);
-                const thumbnailData = await thumbnailResponse.json();
-                const thumbnail = thumbnailData.data[0]?.imageUrl || '';
-
-                const groupCard = document.createElement('div');
-                groupCard.className = 'group-card';
-                groupCard.innerHTML = `
-                    <img src="${thumbnail}" alt="${group.name}" />
-                    <h4>${group.name}</h4>
-                    <div class="group-role">${role.name}</div>
-                    <div class="group-info">
-                        ${group.memberCount.toLocaleString()} members<br>
-                        ${group.description ? group.description.substring(0, 100) + '...' : 'No description'}
-                    </div>
-                `;
-                groupsContainer.appendChild(groupCard);
+            
+            if (!badges.data || badges.data.length === 0) {
+                riskScore += 3;
+                reasons.push('No badges');
+            } else if (badges.data.length < 5) {
+                riskScore += 1;
+                reasons.push('Few badges');
             }
+            
+            if (friends.count === 0) {
+                riskScore += 2;
+                reasons.push('No friends');
+            } else if (friends.count < 5) {
+                riskScore += 1;
+                reasons.push('Few friends');
+            }
+            
+            if (!groups.data || groups.data.length === 0) {
+                riskScore += 1;
+                reasons.push('Not in any groups');
+            }
+            
+            const userGroupIds = groups.data ? groups.data.map(g => g.group.id.toString()) : [];
+            const foundHostile = HOSTILE_GROUPS.filter(hId => userGroupIds.includes(hId));
+            
+            if (foundHostile.length > 0) {
+                riskScore += 10;
+                reasons.push('IN HOSTILE GROUP - IMMEDIATE THREAT');
+            }
+            
+            const ratingEl = document.getElementById('safetyRating');
+            let ratingText = '';
+            let ratingClass = '';
+            
+            if (riskScore >= 7) {
+                ratingText = 'DANGER - LIKELY ALT OR THREAT';
+                ratingClass = 'rating-danger';
+            } else if (riskScore >= 4) {
+                ratingText = 'CAUTION - SUSPICIOUS ACTIVITY';
+                ratingClass = 'rating-caution';
+            } else {
+                ratingText = 'SAFE - LEGITIMATE ACCOUNT';
+                ratingClass = 'rating-safe';
+            }
+            
+            ratingEl.textContent = `${ratingText}\nRisk Score: ${riskScore}/10\nFlags: ${reasons.join(', ') || 'None'}`;
+            ratingEl.className = `safety-rating ${ratingClass}`;
         }
 
-        function filterGroups() {
-            const searchTerm = document.getElementById('groupSearch').value.toLowerCase();
-            const filtered = allGroups.filter(g => 
-                g.group.name.toLowerCase().includes(searchTerm) ||
-                g.role.name.toLowerCase().includes(searchTerm)
-            );
-            displayGroups(filtered);
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showResults() {
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function hideResults() {
+            document.getElementById('results').style.display = 'none';
         }
 
         function showError(message) {
-            const errorDiv = document.getElementById('error');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
+            const errorEl = document.getElementById('error');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
         }
 
-        document.getElementById('userId').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') searchUser();
-        });
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
+        }
     </script>
 </body>
 </html>
