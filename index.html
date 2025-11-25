@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RSO TERMINAL</title>
+    <title>Roblox Background Check</title>
     <style>
         * {
             margin: 0;
@@ -111,7 +111,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>REALMS SECURITY TERMINAL</h1>
+        <h1>ROBLOX BACKGROUND CHECK TOOL</h1>
         
         <div class="input-section">
             <label for="userId">User ID:</label>
@@ -184,15 +184,29 @@
             try {
                 const userInfo = await fetch(`${PROXY}https://users.roblox.com/v1/users/${userId}`).then(r => r.json());
                 
-                const [previousNames, friends, groups, rolimons] = await Promise.all([
+                const [previousNames, friends, groups, badgesPage1] = await Promise.all([
                     fetch(`${PROXY}https://users.roblox.com/v1/users/${userId}/username-history`).then(r => r.json()).catch(() => ({data: []})),
                     fetch(`${PROXY}https://friends.roblox.com/v1/users/${userId}/friends/count`).then(r => r.json()).catch(() => ({count: 0})),
                     fetch(`${PROXY}https://groups.roblox.com/v2/users/${userId}/groups/roles`).then(r => r.json()).catch(() => ({data: []})),
-                    fetch(`${PROXY}https://www.rolimons.com/player/${userId}`).then(r => r.text()).catch(() => null)
+                    fetch(`${PROXY}https://badges.roblox.com/v1/users/${userId}/badges?limit=100&sortOrder=Asc`).then(r => r.json()).catch(() => ({data: [], nextPageCursor: null}))
                 ]);
 
-                displayResults(userInfo, previousNames, friends, groups, rolimons, userId);
-                calculateSafetyRating(userInfo, previousNames, friends, groups, rolimons);
+                let totalBadges = badgesPage1.data ? badgesPage1.data.length : 0;
+                let cursor = badgesPage1.nextPageCursor;
+                
+                while (cursor && totalBadges < 500) {
+                    try {
+                        const nextPage = await fetch(`${PROXY}https://badges.roblox.com/v1/users/${userId}/badges?limit=100&sortOrder=Asc&cursor=${cursor}`).then(r => r.json());
+                        totalBadges += nextPage.data ? nextPage.data.length : 0;
+                        cursor = nextPage.nextPageCursor;
+                        if (!cursor) break;
+                    } catch {
+                        break;
+                    }
+                }
+
+                displayResults(userInfo, previousNames, friends, groups, totalBadges, userId);
+                calculateSafetyRating(userInfo, previousNames, friends, groups, totalBadges);
                 
             } catch (error) {
                 showError('Failed to fetch user data. Check the User ID and try again.');
@@ -201,7 +215,7 @@
             }
         }
 
-        function displayResults(user, prevNames, friends, groups, rolimonsHtml, userId) {
+        function displayResults(user, prevNames, friends, groups, badgeCount, userId) {
             document.getElementById('username').textContent = user.displayName || user.name || 'N/A';
             document.getElementById('profileLink').innerHTML = `<a href="https://www.roblox.com/users/${user.id}/profile" target="_blank" style="color: #fff;">https://www.roblox.com/users/${user.id}/profile</a>`;
             
