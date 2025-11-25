@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Background Check</title>
+    <title>RSO TERMINAL</title>
     <style>
         * {
             margin: 0;
@@ -111,7 +111,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>ROBLOX BACKGROUND CHECK TOOL</h1>
+        <h1>REALMS SECURITY TERMINAL</h1>
         
         <div class="input-section">
             <label for="userId">User ID:</label>
@@ -184,14 +184,15 @@
             try {
                 const userInfo = await fetch(`${PROXY}https://users.roblox.com/v1/users/${userId}`).then(r => r.json());
                 
-                const [previousNames, friends, groups] = await Promise.all([
+                const [previousNames, friends, groups, rolimons] = await Promise.all([
                     fetch(`${PROXY}https://users.roblox.com/v1/users/${userId}/username-history`).then(r => r.json()).catch(() => ({data: []})),
                     fetch(`${PROXY}https://friends.roblox.com/v1/users/${userId}/friends/count`).then(r => r.json()).catch(() => ({count: 0})),
-                    fetch(`${PROXY}https://groups.roblox.com/v2/users/${userId}/groups/roles`).then(r => r.json()).catch(() => ({data: []}))
+                    fetch(`${PROXY}https://groups.roblox.com/v2/users/${userId}/groups/roles`).then(r => r.json()).catch(() => ({data: []})),
+                    fetch(`${PROXY}https://www.rolimons.com/player/${userId}`).then(r => r.text()).catch(() => null)
                 ]);
 
-                displayResults(userInfo, previousNames, friends, groups);
-                calculateSafetyRating(userInfo, previousNames, friends, groups);
+                displayResults(userInfo, previousNames, friends, groups, rolimons, userId);
+                calculateSafetyRating(userInfo, previousNames, friends, groups, rolimons);
                 
             } catch (error) {
                 showError('Failed to fetch user data. Check the User ID and try again.');
@@ -200,7 +201,7 @@
             }
         }
 
-        function displayResults(user, prevNames, friends, groups) {
+        function displayResults(user, prevNames, friends, groups, rolimonsHtml, userId) {
             document.getElementById('username').textContent = user.displayName || user.name || 'N/A';
             document.getElementById('profileLink').innerHTML = `<a href="https://www.roblox.com/users/${user.id}/profile" target="_blank" style="color: #fff;">https://www.roblox.com/users/${user.id}/profile</a>`;
             
@@ -239,17 +240,51 @@
             }
             
             const badgesEl = document.getElementById('badges');
-            badgesEl.innerHTML = `<a href="https://www.roblox.com/users/${user.id}/badges" target="_blank" style="color: #fff;">View All Badges</a> | <a href="https://www.roblox.com/users/${user.id}/profile#!/badges" target="_blank" style="color: #fff;">View Roblox Badges</a>`;
+            let badgeCount = 'Unknown';
+            
+            if (rolimonsHtml) {
+                const badgeMatch = rolimonsHtml.match(/Badges<\/div><div[^>]*>(\d+)/);
+                if (badgeMatch) {
+                    badgeCount = badgeMatch[1];
+                }
+            }
+            
+            badgesEl.innerHTML = `${badgeCount} total badges | <a href="https://www.roblox.com/users/${userId}/badges" target="_blank" style="color: #fff;">View All</a>`;
             
             showResults();
         }
 
-        function calculateSafetyRating(user, prevNames, friends, groups) {
+        function calculateSafetyRating(user, prevNames, friends, groups, rolimonsHtml) {
             let riskScore = 0;
             let reasons = [];
             
             const joinDate = new Date(user.created);
             const accountAgeDays = Math.floor((new Date() - joinDate) / (1000 * 60 * 60 * 24));
+            
+            
+            if (accountAgeDays < 30) {
+                riskScore += 3;
+                reasons.push('Very new account');
+            } else if (accountAgeDays < 180) {
+                riskScore += 2;
+                reasons.push('New account');
+            }
+            
+            let badgeCount = 0;
+            if (rolimonsHtml) {
+                const badgeMatch = rolimonsHtml.match(/Badges<\/div><div[^>]*>(\d+)/);
+                if (badgeMatch) {
+                    badgeCount = parseInt(badgeMatch[1]);
+                }
+            }
+            
+            if (badgeCount === 0) {
+                riskScore += 3;
+                reasons.push('No badges');
+            } else if (badgeCount < 5) {
+                riskScore += 1;
+                reasons.push('Few badges');
+            }
             
             if (accountAgeDays < 30) {
                 riskScore += 3;
