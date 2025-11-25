@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Realms Security Office</title>
+    <title>Roblox Background Check</title>
     <style>
         * {
             margin: 0;
@@ -111,7 +111,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>REALMS BACKGROUND CHECK DATA</h1>
+        <h1>ROBLOX BACKGROUND CHECK TOOL</h1>
         
         <div class="input-section">
             <label for="userId">User ID:</label>
@@ -184,15 +184,16 @@
             try {
                 const userInfo = await fetch(`${PROXY}https://users.roblox.com/v1/users/${userId}`).then(r => r.json());
                 
-                const [previousNames, friends, groups, badges] = await Promise.all([
+                const [previousNames, friends, groups, gameBadges, robloxBadges] = await Promise.all([
                     fetch(`${PROXY}https://users.roblox.com/v1/users/${userId}/username-history`).then(r => r.json()).catch(() => ({data: []})),
                     fetch(`${PROXY}https://friends.roblox.com/v1/users/${userId}/friends/count`).then(r => r.json()).catch(() => ({count: 0})),
                     fetch(`${PROXY}https://groups.roblox.com/v2/users/${userId}/groups/roles`).then(r => r.json()).catch(() => ({data: []})),
-                    fetch(`${PROXY}https://badges.roblox.com/v1/users/${userId}/badges?limit=100`).then(r => r.json()).catch(() => ({data: []}))
+                    fetch(`${PROXY}https://badges.roblox.com/v1/users/${userId}/badges?limit=100`).then(r => r.json()).catch(() => ({data: []})),
+                    fetch(`${PROXY}https://accountinformation.roblox.com/v1/users/${userId}/roblox-badges`).then(r => r.json()).catch(() => ([]))
                 ]);
 
-                displayResults(userInfo, previousNames, friends, groups, badges);
-                calculateSafetyRating(userInfo, previousNames, friends, groups, badges);
+                displayResults(userInfo, previousNames, friends, groups, gameBadges, robloxBadges);
+                calculateSafetyRating(userInfo, previousNames, friends, groups, gameBadges, robloxBadges);
                 
             } catch (error) {
                 showError('Failed to fetch user data. Check the User ID and try again.');
@@ -201,7 +202,7 @@
             }
         }
 
-        function displayResults(user, prevNames, friends, groups, badges) {
+        function displayResults(user, prevNames, friends, groups, gameBadges, robloxBadges) {
             document.getElementById('username').textContent = user.displayName || user.name || 'N/A';
             document.getElementById('profileLink').innerHTML = `<a href="https://www.roblox.com/users/${user.id}/profile" target="_blank" style="color: #fff;">https://www.roblox.com/users/${user.id}/profile</a>`;
             
@@ -240,16 +241,27 @@
             }
             
             const badgesEl = document.getElementById('badges');
-            if (badges.data && badges.data.length > 0) {
-                badgesEl.textContent = `${badges.data.length} badges earned`;
+            const totalGameBadges = gameBadges.data ? gameBadges.data.length : 0;
+            const totalRobloxBadges = robloxBadges ? robloxBadges.length : 0;
+            
+            if (totalGameBadges === 0 && totalRobloxBadges === 0) {
+                badgesEl.innerHTML = 'No badges - HAZARD';
             } else {
-                badgesEl.textContent = 'No badges - HAZARD';
+                let badgeText = '';
+                if (totalGameBadges > 0) {
+                    badgeText += `${totalGameBadges} game badges earned<br>`;
+                }
+                if (totalRobloxBadges > 0) {
+                    const robloxBadgeNames = robloxBadges.map(b => b.name).join(', ');
+                    badgeText += `${totalRobloxBadges} Roblox badges: ${robloxBadgeNames}`;
+                }
+                badgesEl.innerHTML = badgeText;
             }
             
             showResults();
         }
 
-        function calculateSafetyRating(user, prevNames, friends, groups, badges) {
+        function calculateSafetyRating(user, prevNames, friends, groups, gameBadges, robloxBadges) {
             let riskScore = 0;
             let reasons = [];
             
@@ -264,10 +276,14 @@
                 reasons.push('New account');
             }
             
-            if (!badges.data || badges.data.length === 0) {
+            const totalGameBadges = gameBadges.data ? gameBadges.data.length : 0;
+            const totalRobloxBadges = robloxBadges ? robloxBadges.length : 0;
+            const totalBadges = totalGameBadges + totalRobloxBadges;
+            
+            if (totalBadges === 0) {
                 riskScore += 3;
                 reasons.push('No badges');
-            } else if (badges.data.length < 5) {
+            } else if (totalBadges < 5) {
                 riskScore += 1;
                 reasons.push('Few badges');
             }
