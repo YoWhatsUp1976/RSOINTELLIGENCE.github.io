@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Background Check</title>
+    <title>RSO BG CHECK</title>
     <style>
         * {
             margin: 0;
@@ -36,7 +36,7 @@
             margin-bottom: 5px;
             font-weight: bold;
         }
-        input, textarea {
+        input {
             width: 100%;
             padding: 10px;
             background: #000;
@@ -103,7 +103,7 @@
             margin-top: 15px;
             display: none;
         }
-        .group-list, .badge-list, .username-list, .friends-info {
+        .group-list, .username-list, .friends-info {
             margin-left: 10px;
             font-size: 14px;
         }
@@ -111,13 +111,13 @@
 </head>
 <body>
     <div class="container">
-        <h1>ROBLOX BACKGROUND CHECK TOOL</h1>
+        <h1>REALMS SECURITY TERMINAL</h1>
         
         <div class="input-section">
             <label for="userId">User ID:</label>
             <input type="text" id="userId" placeholder="Enter Roblox User ID">
             
-            <button onclick="checkUser()">RUN CHECK</button>
+            <button id="checkBtn">RUN CHECK</button>
         </div>
 
         <div class="loading" id="loading">LOADING DATA...</div>
@@ -158,7 +158,7 @@
             </div>
             <div class="result-item">
                 <div class="result-label">GAME BADGES / ACTIVITY:</div>
-                <div class="badge-list" id="badges"></div>
+                <div class="result-value" id="badges"></div>
             </div>
             
             <div class="safety-rating" id="safetyRating"></div>
@@ -169,7 +169,7 @@
         const PROXY = 'https://corsproxy.io/?';
         const HOSTILE_GROUPS = ['12345', '67890', '11111', '22222', '33333'];
 
-        async function checkUser() {
+        document.getElementById('checkBtn').addEventListener('click', async function() {
             const userId = document.getElementById('userId').value.trim();
             
             if (!userId) {
@@ -213,7 +213,7 @@
             } finally {
                 hideLoading();
             }
-        }
+        });
 
         function displayResults(user, prevNames, friends, groups, badgeCount, userId) {
             document.getElementById('username').textContent = user.displayName || user.name || 'N/A';
@@ -254,27 +254,18 @@
             }
             
             const badgesEl = document.getElementById('badges');
-            let badgeCount = 'Unknown';
-            
-            if (rolimonsHtml) {
-                const badgeMatch = rolimonsHtml.match(/Badges<\/div><div[^>]*>(\d+)/);
-                if (badgeMatch) {
-                    badgeCount = badgeMatch[1];
-                }
-            }
-            
-            badgesEl.innerHTML = `${badgeCount} total badges | <a href="https://www.roblox.com/users/${userId}/badges" target="_blank" style="color: #fff;">View All</a>`;
+            const displayCount = badgeCount >= 500 ? `${badgeCount}+` : badgeCount;
+            badgesEl.innerHTML = `${displayCount} total badges | <a href="https://www.roblox.com/users/${userId}/badges" target="_blank" style="color: #fff;">View All</a>`;
             
             showResults();
         }
 
-        function calculateSafetyRating(user, prevNames, friends, groups, rolimonsHtml) {
+        function calculateSafetyRating(user, prevNames, friends, groups, badgeCount) {
             let riskScore = 0;
             let reasons = [];
             
             const joinDate = new Date(user.created);
             const accountAgeDays = Math.floor((new Date() - joinDate) / (1000 * 60 * 60 * 24));
-            
             
             if (accountAgeDays < 30) {
                 riskScore += 3;
@@ -282,14 +273,6 @@
             } else if (accountAgeDays < 180) {
                 riskScore += 2;
                 reasons.push('New account');
-            }
-            
-            let badgeCount = 0;
-            if (rolimonsHtml) {
-                const badgeMatch = rolimonsHtml.match(/Badges<\/div><div[^>]*>(\d+)/);
-                if (badgeMatch) {
-                    badgeCount = parseInt(badgeMatch[1]);
-                }
             }
             
             if (badgeCount === 0) {
@@ -298,14 +281,6 @@
             } else if (badgeCount < 5) {
                 riskScore += 1;
                 reasons.push('Few badges');
-            }
-            
-            if (accountAgeDays < 30) {
-                riskScore += 3;
-                reasons.push('Very new account');
-            } else if (accountAgeDays < 180) {
-                riskScore += 2;
-                reasons.push('New account');
             }
             
             if (friends.count === 0) {
