@@ -253,7 +253,7 @@
             const foundHostile = HOSTILE_GROUPS.filter(hId => userGroupIds.includes(hId));
             
             if (foundHostile.length > 0) {
-                hostileGroupsEl.textContent = `ALERT: Found in ${foundHostile.length} hostile group(s): ${foundHostile.join(', ')}`;
+                hostileGroupsEl.innerHTML = `<span style="color: #ff0000; font-weight: bold;">ALERT: Found in ${foundHostile.length} hostile group(s): ${foundHostile.join(', ')}</span>`;
             } else {
                 hostileGroupsEl.textContent = 'None detected';
             }
