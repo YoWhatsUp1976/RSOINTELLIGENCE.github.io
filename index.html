@@ -90,6 +90,11 @@
         .rating-safe { background: #fff; color: #000; }
         .rating-caution { background: #666; color: #fff; }
         .rating-danger { background: #333; color: #fff; border-color: #fff; }
+        .rating-hostile { background: #ff0000; color: #fff; border-color: #fff; animation: pulse 1s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
         .loading {
             text-align: center;
             padding: 20px;
@@ -308,7 +313,10 @@
             let ratingText = '';
             let ratingClass = '';
             
-            if (riskScore >= 7) {
+            if (foundHostile.length > 0) {
+                ratingText = '⚠️ HOSTILE GROUP DETECTED - IMMEDIATE THREAT ⚠️';
+                ratingClass = 'rating-hostile';
+            } else if (riskScore >= 7) {
                 ratingText = 'DANGER - LIKELY ALT OR THREAT';
                 ratingClass = 'rating-danger';
             } else if (riskScore >= 4) {
